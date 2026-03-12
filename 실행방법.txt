@@ -11,8 +11,9 @@
 3단계: 보안 환경 설정 (.env 파일 만들기)
    - 폴더 안에 '.env' 파일을 만들고 아래 3줄을 넣으세요.
      NEXT_PUBLIC_API_URL=http://localhost:3000/api
-     ADMIN_TOKEN=나만의인증비밀번호
-     NEXT_PUBLIC_ADMIN_PASSWORD=나만의관리자로그인비밀번호
+     ADMIN_TOKEN=DB초기화를위한관리자추가비밀번호
+     NEXT_PUBLIC_ADMIN_ID=관리자아이디
+     NEXT_PUBLIC_ADMIN_PASSWORD=관리자비밀번호
 
 4단계: 서버 실행
    - 터미널에 입력: npm run dev
