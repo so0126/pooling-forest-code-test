@@ -37,7 +37,10 @@ export default function Home() {
   }
 
   const addBook = () => {
-    if (!newBookTitle || !newBookPrice) return;
+    if (!newBookTitle || !newBookPrice || newBookStock === "") {
+    alert("제목, 가격, 재고를 모두 정확히 입력해주세요!");
+    return;
+  }
 
     fetch(process.env.NEXT_PUBLIC_API_URL + "/books", {
       method: "POST",
