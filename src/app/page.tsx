@@ -13,6 +13,7 @@ export default function Home() {
   const [newBookPrice, setNewBookPrice] = useState("");
   const [newBookStock, setNewBookStock] = useState("");
   const [SearchTerm, setSearchTerm] = useState("");
+  const [adminToken, setAdminToken] = useState("");
 
   useEffect(() => {
     fetch(process.env.NEXT_PUBLIC_API_URL + "/books")
@@ -64,7 +65,36 @@ export default function Home() {
         setNewBookPrice("");
       });
   };
+  const handleReset = async () => {
+    if (!adminToken) {
+      alert("관리자 토큰을 입력해주세요!");
+      return;
+    }
 
+    if (!confirm("정말로 모든 데이터를 초기화하시겠습니까?")) return;
+
+    try {
+      const res = await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          action: "reset", 
+          token: adminToken // 입력한 토큰을 백엔드로 전달
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("초기화 성공!");
+        window.location.reload();
+      } else {
+        alert(`실패: ${data.error}`);
+      }
+    } catch (e) {
+      alert("서버 통신 중 오류가 발생했습니다.");
+    }
+  };
   const FilteredBooks = SearchTerm
     ? books.filter((b) =>
       b.title.toLowerCase().includes(SearchTerm.toLowerCase())
@@ -85,6 +115,7 @@ export default function Home() {
             ) : (
               <a href="/login" className="px-3 py-1 rounded bg-slate-700">로그인</a>
             )}
+          
           </div>
         </div>
       </nav>
@@ -103,6 +134,8 @@ export default function Home() {
             className="p-4 mb-5 rounded"
             style={{ background: "#fffef7", border: "1px solid #f0e68c" }}
           >
+
+            
             <h3 className="mb-3 font-semibold" style={{ color: "#34495e" }}>
               📝 도서 추가 (관리자 전용)
             </h3>
@@ -135,6 +168,28 @@ export default function Home() {
             >
               추가
             </button>
+
+            <section className="mt-8 p-6 border-2 border-red-500 rounded-lg bg-red-50">
+          <h2 className="text-xl font-bold text-red-700 mb-4">관리자 위험 구역</h2>
+          
+          <div className="flex gap-4 items-center">
+            <input
+              type="password"
+              placeholder="관리자 토큰(ADMIN_TOKEN) 입력"
+              value={adminToken}
+              onChange={(e) => setAdminToken(e.target.value)}
+              className="border p-2 rounded flex-1"
+            />
+            <button
+              onClick={handleReset}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+            >
+              DB 전체 초기화 (Reset)
+            </button>
+          </div>
+          <p className="text-xs text-red-500 mt-2">* .env에 설정한 토큰값과 일치해야 작동합니다.</p>
+        </section>
+
           </div>
         )}
 
