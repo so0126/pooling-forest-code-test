@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-var ADMIN_PASSWORD = "admin123";
 
 export default function Login() {
   const router = useRouter();
@@ -10,13 +9,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   function handleLogin() {
-    if (password == ADMIN_PASSWORD) {
+   if (password == process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       alert("로그인 성공!");
-      router.push("/?admin=true&user=" + user_name);
-    } else {
-      alert("비밀번호가 틀렸습니다");
-    }
+  sessionStorage.setItem("isAdmin", "true");
+  sessionStorage.setItem("userName", user_name);
+  router.push("/"); // 파라미터 없이 깔끔하게 이동
   }
+}
 
   return (
     <div className="bg-white min-h-screen">
