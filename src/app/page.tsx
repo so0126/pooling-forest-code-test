@@ -2,13 +2,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-var ADMIN_PASSWORD = "admin123";
-let API_URL = "http://localhost:3000/api";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  const [books, setBooks] = useState([]);
-  const [cart, setcart] = useState([]);
+  const [books, setBooks] = useState<any[]>([]);
+  const [cart, setcart] = useState<any[]>([]);
   const [user_name, setUserName] = useState("");
   const [AdminMode, setAdminMode] = useState(false);
   const [newBookTitle, setnewbooktitle] = useState("");
@@ -16,18 +14,20 @@ export default function Home() {
   const [SearchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch(API_URL + "/books")
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/books")
       .then((res) => res.json())
       .then((data) => setBooks(data));
 
-    if (searchParams.get("admin") == "true") {
+    const isAdmin = sessionStorage.getItem("isAdmin");
+    const storedUser = sessionStorage.getItem("userName");
+    if (isAdmin === "true") {
       setAdminMode(true);
-      setUserName(searchParams.get("user") || "");
+      setUserName(storedUser || "");
     }
   }, []);
 
-  function addToCart(book) {
-    fetch(API_URL + "/cart?bookId=" + book.id + "&user=" + user_name)
+  function addToCart(book:any) {
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/cart?bookId=" + book.id + "&user=" + user_name)
       .then((res) => res.json())
       .then(() => {
         setcart([...cart, book]);
@@ -35,18 +35,10 @@ export default function Home() {
       });
   }
 
-  function adminLogin() {
-    var password = prompt("관리자 비밀번호를 입력하세요");
-    if (password == ADMIN_PASSWORD) {
-      setAdminMode(true);
-      alert("관리자 모드 활성화");
-    }
-  }
-
   const addBook = () => {
     if (!newBookTitle || !newBookPrice) return;
 
-    fetch(API_URL + "/books", {
+    fetch(process.env.NEXT_PUBLIC_API_URL + "/books", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -65,8 +57,8 @@ export default function Home() {
 
   const FilteredBooks = SearchTerm
     ? books.filter((b) =>
-        b.title.toLowerCase().includes(SearchTerm.toLowerCase())
-      )
+      b.title.toLowerCase().includes(SearchTerm.toLowerCase())
+    )
     : books;
   return (
     <div className="bg-white min-h-screen">
@@ -185,7 +177,7 @@ export default function Home() {
               className="mt-4 text-xl font-bold"
               style={{ color: "#2c3e50" }}
             >
-              총액: {cart.reduce((sum, item) => sum + parseInt(item.price), 0)}
+              총액: {cart.reduce((sum, item: any) => sum + parseInt(item.price), 0)}
               원
             </div>
           </div>
