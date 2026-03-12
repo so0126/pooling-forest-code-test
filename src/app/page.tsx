@@ -36,11 +36,16 @@ export default function Home() {
       });
   }
 
+  function removeFromCart(index: number) {
+    const newCart = cart.filter((_, i) => i !== index);
+    setcart(newCart);
+  }
+
   const addBook = () => {
     if (!newBookTitle || !newBookPrice || newBookStock === "") {
-    alert("제목, 가격, 재고를 모두 정확히 입력해주세요!");
-    return;
-  }
+      alert("제목, 가격, 재고를 모두 정확히 입력해주세요!");
+      return;
+    }
 
     fetch(process.env.NEXT_PUBLIC_API_URL + "/books", {
       method: "POST",
@@ -169,12 +174,14 @@ export default function Home() {
               🛒 장바구니 ({cart.length})
             </h2>
             {cart.map((item, i) => (
-              <div
-                key={i}
-                className="py-2 border-b"
-                style={{ borderColor: "#dee2e6" }}
-              >
-                {item.title} - {item.price}원
+              <div key={i} className="py-2 border-b flex justify-between items-center" style={{ borderColor: "#dee2e6" }}>
+                <span>{item.title} - {item.price}원</span>
+                <button
+                  onClick={() => removeFromCart(i)}
+                  className="text-xs px-2 py-1 bg-gray-200 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded"
+                >
+                  삭제
+                </button>
               </div>
             ))}
             <div
