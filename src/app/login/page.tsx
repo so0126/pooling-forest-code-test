@@ -5,17 +5,23 @@ import { useRouter } from "next/navigation";
 
 export default function Login() {
   const router = useRouter();
-  const [user_name, setUserName] = useState("");
+  const [userId, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
-   if (password == process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      alert("로그인 성공!");
-  sessionStorage.setItem("isAdmin", "true");
-  sessionStorage.setItem("userName", user_name);
-  router.push("/"); // 파라미터 없이 깔끔하게 이동
+  const handleLogin = (e: React.FormEvent) => {
+  e.preventDefault();
+   const validId = process.env.NEXT_PUBLIC_ADMIN_ID;
+   const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+
+  if (userId === validId && password === validPassword) {
+    sessionStorage.setItem("isAdmin", "true");
+    sessionStorage.setItem("userName", userId);
+    alert("관리자님, 환영합니다!");
+    window.location.href = "/";
+  } else {
+    alert("아이디 또는 비밀번호가 일치하지 않습니다.");
   }
-}
+};
 
   return (
     <div className="bg-white min-h-screen">
@@ -59,7 +65,7 @@ export default function Login() {
             </label>
             <input
               placeholder="사용자 이름"
-              value={user_name}
+              value={userId}
               onChange={(e) => setUserName(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded"
               style={{ background: "#fafafa" }}
