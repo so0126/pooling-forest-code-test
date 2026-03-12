@@ -28,13 +28,13 @@
 환경변수 설정
 루트 폴더에 .env 파일을 생성하고 아래 항목을 설정하세요.
 
-코드 스니펫
+```
 NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ADMIN_TOKEN=발급받은_토큰값
 NEXT_PUBLIC_ADMIN_PASSWORD=설정할_비밀번호
 개발 서버 실행
 
-Bash
+```Bash
 npm run dev
 접속
 브라우저에서 http://localhost:3000으로 접속합니다.
