@@ -11,6 +11,7 @@ export default function Home() {
   const [AdminMode, setAdminMode] = useState(false);
   const [newBookTitle, setnewbooktitle] = useState("");
   const [newBookPrice, setNewBookPrice] = useState("");
+  const [newBookStock, setNewBookStock] = useState("");
   const [SearchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -43,7 +44,8 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: newBookTitle,
-        price: newBookPrice,
+        price: Number(newBookPrice),
+        stock: Number(newBookStock) || 0, // 재고 추가
         admin: AdminMode ? "true" : "false",
       }),
     })
@@ -106,10 +108,17 @@ export default function Home() {
             <input
               placeholder="가격"
               value={newBookPrice}
+              type="number"
               onChange={(e) => setNewBookPrice(e.target.value)}
               className="px-3 py-2 mr-2 border border-gray-300 rounded"
               style={{ background: "#fff" }}
-              type="text"
+            />
+            <input
+              placeholder="재고"
+              type="number"
+              value={newBookStock}
+              onChange={(e) => setNewBookStock(e.target.value)}
+              className="px-3 py-2 mr-2 border border-gray-300 rounded"
             />
             <button
               onClick={addBook}
