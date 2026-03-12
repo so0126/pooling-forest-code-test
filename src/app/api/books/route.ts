@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '권한 없음' }, { status: 403 })
     }
 
-    const stock = Math.floor(Math.random() * 20) + 1
+    const stock = body.stock !== undefined ? Number(body.stock) : 0;
     const bookId = db.addBook(body.title, body.price, stock)
 
     const newBook = {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newBook)
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 })
   }
 }
 
