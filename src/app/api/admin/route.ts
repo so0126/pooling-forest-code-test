@@ -3,7 +3,7 @@ import fs from 'fs'
 const Database = require('better-sqlite3')
 const path = require('path')
 
-const ADMIN_TOKEN = 'admin-secret-token-123'
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     try {
       const logs = fs.readFileSync(body.logPath || './db.log', 'utf-8')
       return NextResponse.json({ logs })
-    } catch (e) {
+    } catch (e:any) {
       return NextResponse.json({ error: e.message })
     }
   } else if (action == 'query') {
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       const result = db.prepare(query).all()
       db.close()
       return NextResponse.json({ result })
-    } catch (e) {
+    } catch (e:any) {
       db.close()
       return NextResponse.json({ error: e.message })
     }
