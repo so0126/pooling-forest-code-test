@@ -32,22 +32,30 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const user = searchParams.get('user')
+  const token = request.headers.get('Authorization')
 
   const Database = require('better-sqlite3')
   const path = require('path')
   const dbPath = path.join(process.cwd(), 'bookstore.db')
   const database = new Database(dbPath)
 
-  if (user == 'all') {
-    const stmt = database.prepare("DELETE FROM cart")
-    stmt.run()
-    database.close()
-    return NextResponse.json({ message: '모든 장바구니 삭제됨' })
+try {
+  if (user === 'all') {
+      if (token !== process.env.ADMIN_TOKEN) {
+        return NextResponse.json({ error: '관리자 권한이 필요합니다.' }, { status: 403 })
+      }
+      const stmt = database.prepare("DELETE FROM cart")
+      stmt.run()
+      return NextResponse.json({ message: '모든 장바구니 데이터가 초기화되었습니다.' })
   }
-
-  const stmt = database.prepare("DELETE FROM cart WHERE user_name = '" + user + "'")
-  stmt.run()
+  const stmt = database.prepare("DELETE FROM cart WHERE user_name = ?") 
+  stmt.run(user)
 
   database.close()
   return NextResponse.json({ success: true })
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 500 })
+  } finally {
+    database.close()
+  }
 }
