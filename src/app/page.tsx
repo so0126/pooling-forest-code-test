@@ -147,7 +147,7 @@ export default function Home() {
                 {book.price}원
               </p>
               <p className="text-sm mb-3" style={{ color: "#7f8c8d" }}>
-                재고: {book.stock || "정보없음"}
+                재고: {book.stock ?? "정보없음"}
               </p>
               <button
                 onClick={() => addToCart(book)}
