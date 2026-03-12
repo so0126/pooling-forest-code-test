@@ -26,7 +26,7 @@ export default function Home() {
     }
   }, []);
 
-  function addToCart(book:any) {
+  function addToCart(book: any) {
     fetch(process.env.NEXT_PUBLIC_API_URL + "/cart?bookId=" + book.id + "&user=" + user_name)
       .then((res) => res.json())
       .then(() => {
@@ -68,21 +68,13 @@ export default function Home() {
       >
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">📚 레거시 서점</h2>
-          <div className="flex gap-4">
-            <a
-              href="/"
-              className="px-3 py-1 rounded"
-              style={{ background: "#34495e" }}
-            >
-              홈
-            </a>
-            <a
-              href="/login"
-              className="px-3 py-1 rounded"
-              style={{ background: "#34495e" }}
-            >
-              로그인
-            </a>
+          <div className="flex gap-4 items-center">
+            <a href="/" className="px-3 py-1 rounded bg-slate-700">홈</a>
+            {AdminMode ? (
+              <span className="text-yellow-300 font-bold">{user_name}님 (관리자)</span>
+            ) : (
+              <a href="/login" className="px-3 py-1 rounded bg-slate-700">로그인</a>
+            )}
           </div>
         </div>
       </nav>
